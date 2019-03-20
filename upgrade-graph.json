@@ -5,8 +5,8 @@
       "payload": "registry.svc.ci.openshift.org/ocp/release:4.0.0-0.nightly-2019-03-18-200009"
     },
     {
-      "version": "4.0.0-0.nightly-2019-03-19-004004",
-      "payload": "registry.svc.ci.openshift.org/ocp/release:4.0.0-0.nightly-2019-03-19-004004"
+      "version": "4.0.0-0.nightly-2019-03-19-003746",
+      "payload": "registry.svc.ci.openshift.org/ocp/release:4.0.0-0.nightly-2019-03-19-003746"
     }
   ],
   "edges": [
