@@ -1,6 +1,10 @@
 {
   "nodes": [
     {
+      "version": "4.1.0-0.nightly-2019-05-22-050858",
+      "payload": "registry.svc.ci.openshift.org/ocp/release@sha256:29e03d18fb7fe375bc5d103f22df3343fc40843a6acfbb52b785b7f3aee3921f"
+    },
+    {
       "version": "4.1.0-0.nightly-2019-05-22-190823",
       "payload": "registry.svc.ci.openshift.org/ocp/release@sha256:bd0af072c542d6a4aa614151a6caf9f69a197b33e0f57dc180ea795a7baf0159"
     },
@@ -13,6 +17,10 @@
     [
       0,
       1
+    ]
+    [
+      1,
+      2
     ]
   ]
 }
