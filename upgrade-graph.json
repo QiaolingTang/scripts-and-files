@@ -5,8 +5,8 @@
       "payload": "registry.svc.ci.openshift.org/ocp/release@sha256:bfca31dbb518b35f312cc67516fa18aa40df9925dc84fdbcd15f8bbca425d7ff"
     },
     {
-      "version": "4.2.0-0.nightly-2019-08-08-103722",
-      "payload": "registry.svc.ci.openshift.org/ocp/release@sha256:82ff0fc8864805b331539540f3d8644f01bd5bf0d1e6ac08a93b57783faeb2b8"
+      "version": "4.2.0-0.nightly-2019-08-12-204658",
+      "payload": "registry.svc.ci.openshift.org/ocp/release@sha256:d25b03e47aef830b8c841de7968933d20d431381a51bf70cba98c1ae3d13a26d"
     }
   ],
   "edges": [
