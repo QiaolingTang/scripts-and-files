@@ -9,10 +9,11 @@ objects:
     name: cluster-logging
     namespace: openshift-logging
   spec:
-    channel: "4.2"
+    channel: "${CHANNEL}"
     installPlanApproval: Automatic
     name: cluster-logging
     source: ${SOURCE}
     sourceNamespace: openshift-marketplace
 parameters:
   - name: SOURCE
+  - name: CHANNEL
