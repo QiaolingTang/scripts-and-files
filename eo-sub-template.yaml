@@ -9,10 +9,11 @@ objects:
     name: elasticsearch-operator
     namespace: openshift-operators-redhat
   spec:
-    channel: "4.2"
+    channel: "${CHANNEL}"
     installPlanApproval: Automatic
     name: elasticsearch-operator
     source: ${SOURCE}
     sourceNamespace: openshift-marketplace
 parameters:
   - name: SOURCE
+  - name: CHANNEL
