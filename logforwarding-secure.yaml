@@ -1,0 +1,27 @@
+apiVersion: logging.openshift.io/v1alpha1
+kind: LogForwarding
+metadata:
+  annotations:
+    clusterlogging.openshift.io/logforwardingtechpreview: enabled
+  name: instance
+  namespace: openshift-logging
+spec:
+  outputs:
+    - name: clo-default-output-es
+      type: elasticsearch
+      endpoint: 'elasticsearch.openshift-logging.svc:9200'
+      secret:
+        name: elasticsearch
+  pipelines:
+    - name: clo-default-app-pipeline
+      type: logs.app
+      outputRefs:
+        - clo-default-output-es
+    - name: clo-default-infra-pipeline
+      type: logs.infra
+      outputRefs:
+        - clo-default-output-es
+    - name: clo-default-audit-pipeline
+      type: logs.audit
+      outputRefs:
+        - clo-default-output-es
