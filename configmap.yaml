@@ -9,7 +9,7 @@ data:
         ca_private_key_path /etc/fluentd/secrets/ca.key
       </transport>
       <security>
-        shared_key /etc/fluentd/secrets/shared_key
+        shared_key fluentdserver
         self_hostname fluentdserver
       </security>
     </source>
