@@ -8,14 +8,12 @@ spec:
   logStore:
     type: "elasticsearch"
     elasticsearch:
-      nodeCount: 3
-      redundancyPolicy: "ZeroRedundancy"
+      nodeCount: 2
+      redundancyPolicy: "SingleRedundancy"
       resources:
-        requests:
-          memory: "4Gi"
-      storage:
-        storageClassName: "gp2"
-        size: "20Gi"
+          requests:
+            cpu: "200m"
+            memory: "2Gi"
   visualization:
     type: "kibana"
     kibana:
@@ -26,5 +24,5 @@ spec:
       schedule: "*/10 * * * *"
   collection:
     logs:
-      type: "fluentd"
-      fluentd: {}
+      type: "rsyslog"
+      rsyslog: {}
