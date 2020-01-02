@@ -2,6 +2,36 @@
 
 #Create some bogus index by different name and different date with ElasticSearch Rest API.
 
+oc project openshift-logging
+es_pod1_name=$(oc get pods --selector component=elasticsearch -o jsonpath={.items[?\(@.status.phase==\"Running\"\)].metadata.name} | cut -d" " -f1)
+if [ -z ${es_pod1_name} ]; then
+   echo "No running ES pod can be found"
+   exit
+fi
+fluentd_pod_name=$(oc get pods --selector component=fluentd -o jsonpath={.items[?\(@.status.phase==\"Running\"\)].metadata.name} | cut -d" " -f1)
+
+curl_via_fluentd="oc exec $fluentd_pod_name -- curl -s --cacert /etc/fluent/keys/app-ca --cert /etc/fluent/keys/app-cert --key /etc/fluent/keys/app-key https://elasticsearch:9200"
+curl_via_es="oc exec -c elasticsearch $es_pod1_name -- curl -s --cacert /etc/elasticsearch/secret/admin-ca --cert /etc/elasticsearch/secret/admin-cert --key /etc/elasticsearch/secret/admin-key https://elasticsearch:9200"
+curl_via_token="oc exec $fluentd_pod_name curl -kv -H \"Authorization: Bearer `oc whoami -t`\" https://172.30.136.6:9200"
+curl_via_cmd=$curl_via_es
+
+
+function create_index()
+{
+   daystr=$1
+   indexname=${2:-project.test}
+   eval $curl_via_cmd/${indexname}.${cur_uuid}.${daystr}/curatortest/ -XPOST -d \'{ \"message\" : \"${daystr} message\" }\'
+   echo "#"
+}
+
+function create_operation_index()
+{
+   daystr=$1
+   eval $curl_via_cmd/.operations.${daystr}/curatortest/ -XPOST -d \'{ \"message\" : \"${daystr} message\" }\'
+   echo "#"
+
+}
+
 function push_index()
 {
     for line in `cat index_days.list`; do
@@ -17,7 +47,7 @@ function push_index()
     done
 }
 
-index_snapshot="index_snap.`date +%m%d%H%M%S`"
+index_snapshoft="index_snap.`date +%m%d%H%M%S`"
 function print_index()
 {
    for line in `cat index_days.list`; do
