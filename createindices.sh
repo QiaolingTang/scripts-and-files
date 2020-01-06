@@ -2,7 +2,6 @@
 
 #Create some bogus index by different name and different date with ElasticSearch Rest API.
 
-if [[ $# == 0 ]]; then
 cat <<EOF >index_days.list
 d1=$(date -d "-1 day" +%Y.%m.%d)
 d6=$(date -d "-6 day" +%Y.%m.%d)
