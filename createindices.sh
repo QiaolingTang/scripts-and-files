@@ -15,3 +15,5 @@ d30=$(date -d "-30 day" +%Y.%m.%d)
 d31=$(date -d "-31 day" +%Y.%m.%d)
 d60=$(date -d "-60 day" +%Y.%m.%d)
 EOF
+
+echo "created days list"
