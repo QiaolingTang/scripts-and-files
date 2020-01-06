@@ -1,0 +1,31 @@
+apiVersion: v1
+data:
+  config.yaml: |
+    myapp-dev:
+      delete:
+        days: 1
+
+    .operations:
+      delete:
+        weeks: 1
+
+    .defaults:
+      delete:
+        days: 7
+    .regex:
+      - pattern: '^project\..+\-dev.*\..*$'
+        delete:
+          days: 31
+      - pattern: '.*prod.*\..*$'
+        delete:
+          months: 1
+  curator5.yaml: "---\nclient:\n  hosts:\n  - ${ES_HOST}\n  port: ${ES_PORT}\n  use_ssl:
+    True\n  certificate: ${ES_CA}\n  client_cert: ${ES_CLIENT_CERT}\n  client_key:
+    ${ES_CLIENT_KEY}\n  ssl_no_validate: False\n  timeout: ${CURATOR_TIMEOUT}\n  master_only:
+    False\nlogging:\n  loglevel: ${CURATOR_LOG_LEVEL}\n  logformat: default\n  blacklist:
+    ['elasticsearch', 'urllib3']\n  \n"
+kind: ConfigMap
+metadata:
+  name: curator
+  namespace: openshift-logging
+
