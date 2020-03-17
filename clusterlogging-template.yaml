@@ -23,7 +23,7 @@ objects:
                 memory: 2Gi
             storage: 
               storageClassName: ${STORAGE_CLASS}
-              size: "10Gi"
+              size: ${PVC_SIZE}
             redundancyPolicy: "ZeroRedundancy"
         visualization:
           type: "kibana"
@@ -40,3 +40,4 @@ objects:
 
 parameters:
   - name: STORAGE_CLASS
+  - name: PVC_SIZE
