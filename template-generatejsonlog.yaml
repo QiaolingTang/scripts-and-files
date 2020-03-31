@@ -25,7 +25,7 @@ objects:
       metadata:
         annotations:
           capabilities: Seamless Upgrades
-          containerImage: quay.io/qiaolingtang/generate-log@sha256:0a6f1c44c3a16abb2485a67dc344051ae7d74bc4949f8dfa1d4ee62967d7cc57
+          containerImage: quay.io/qiaolingtang/generate-log:latest
           support: Qiaoling Tang
         creationTimestamp: null
         labels:
@@ -36,7 +36,7 @@ objects:
           - /run.sh
           command:
           - /bin/sh
-          image: quay.io/qiaolingtang/generate-log@sha256:0a6f1c44c3a16abb2485a67dc344051ae7d74bc4949f8dfa1d4ee62967d7cc57
+          image: quay.io/qiaolingtang/generate-log:latest
           imagePullPolicy: IfNotPresent
           name: log4j2
           resources: {}
