@@ -188,7 +188,7 @@ spec:
         token:
           from: serviceAccount
       target:
-        name: logging-loki
+        name: ${LOKISTACK_NAME}
         namespace: ${NAMESPACE}
     name: lokistack
     tls:
