@@ -69,6 +69,40 @@ spec:
   managementState: Managed
   size: 1x.demo
   storage:
+    schemas:
+    - effectiveDate: "2025-01-01"
+      version: v13
+    secret:
+      name: ${SECRETNAME}
+      type: ${STORAGETYPE}
+  storageClassName: ${STORAGECLASS}
+  tenants:
+    mode: openshift-logging
+  rules:
+    enabled: true
+    selector:
+      matchLabels:
+        openshift.io/cluster-monitoring: "true"
+    namespaceSelector:
+      matchLabels:
+        openshift.io/cluster-monitoring: "true"
+EOF
+```
+
+```
+cat << EOF | oc apply -f -
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: ${LOKISTACK_NAME}
+  namespace: openshift-logging
+spec:
+  managementState: Managed
+  size: 1x.pico
+  storage:
+    schemas:
+    - effectiveDate: "2025-01-01"
+      version: v13
     secret:
       name: ${SECRETNAME}
       type: ${STORAGETYPE}
@@ -122,5 +156,54 @@ spec:
       name: ${LOKISTACK_NAME}
     type: lokistack
   managementState: Managed
+EOF
+```
+
+
+# Logging 6.x
+```
+oc -n openshift-logging create sa log-collector
+
+oc -n openshift-logging adm policy add-cluster-role-to-user logging-collector-logs-writer -z log-collector
+
+oc -n openshift-logging adm policy add-cluster-role-to-user collect-application-logs -z log-collector
+
+oc -n openshift-logging adm policy add-cluster-role-to-user collect-infrastructure-logs -z log-collector
+
+oc -n openshift-logging adm policy add-cluster-role-to-user collect-audit-logs -z log-collector
+```
+
+```
+cat << EOF | oc create -f -
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: collector-lokistack
+  namespace: openshift-logging
+spec:
+  managementState: Managed
+  outputs:
+  - lokiStack:
+      authentication:
+        token:
+          from: serviceAccount
+      target:
+        name: logging-loki
+        namespace: ${NAMESPACE}
+    name: lokistack
+    tls:
+      ca:
+        configMapName: openshift-service-ca.crt
+        key: service-ca.crt
+    type: lokiStack
+  pipelines:
+  - inputRefs:
+    - application
+    - infrastructure
+    name: logs-to-loki
+    outputRefs:
+    - lokistack
+  serviceAccount:
+    name: log-collector
 EOF
 ```
