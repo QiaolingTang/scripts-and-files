@@ -199,6 +199,7 @@ spec:
   pipelines:
   - inputRefs:
     - application
+    - audit
     - infrastructure
     name: logs-to-loki
     outputRefs:
