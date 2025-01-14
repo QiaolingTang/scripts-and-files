@@ -36,7 +36,7 @@ apiVersion: loki.grafana.com/v1
 kind: LokiStack
 metadata:
   name: ${LOKISTACK_NAME}
-  namespace: openshift-logging
+  namespace: ${NAMESPACE}
 spec:
   managementState: Managed
   size: 1x.extra-small
@@ -64,7 +64,7 @@ apiVersion: loki.grafana.com/v1
 kind: LokiStack
 metadata:
   name: ${LOKISTACK_NAME}
-  namespace: openshift-logging
+  namespace: ${NAMESPACE}
 spec:
   managementState: Managed
   size: 1x.demo
@@ -95,7 +95,7 @@ apiVersion: loki.grafana.com/v1
 kind: LokiStack
 metadata:
   name: ${LOKISTACK_NAME}
-  namespace: openshift-logging
+  namespace: ${NAMESPACE}
 spec:
   managementState: Managed
   size: 1x.pico
