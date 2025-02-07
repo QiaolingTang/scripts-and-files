@@ -208,3 +208,49 @@ spec:
     name: log-collector
 EOF
 ```
+
+# COO
+```
+cat << EOF | oc create -f -
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: openshift-cluster-observability-operator
+  labels:
+    openshift.io/cluster-monitoring: "true"
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openshift-cluster-observability-operator
+  namespace: openshift-cluster-observability-operator
+spec: {}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: cluster-observability-operator
+  namespace: openshift-cluster-observability-operator
+spec:
+  channel: development
+  installPlanApproval: Automatic
+  name: cluster-observability-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+EOF
+```
+
+```
+cat << EOF | oc create -f -
+apiVersion: observability.openshift.io/v1alpha1
+kind: UIPlugin
+metadata:
+  name: logging
+spec:
+  logging:
+    logsLimit: 50
+    lokiStack:
+      name: ${LOKISTACK_NAME}
+  type: Logging
+EOF
+```
