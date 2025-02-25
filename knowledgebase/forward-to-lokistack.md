@@ -174,7 +174,7 @@ oc -n openshift-logging adm policy add-cluster-role-to-user collect-audit-logs -
 ```
 
 ```
-cat << EOF | oc create -f -
+cat << EOF | oc apply -f -
 apiVersion: observability.openshift.io/v1
 kind: ClusterLogForwarder
 metadata:
@@ -211,7 +211,7 @@ EOF
 
 # COO
 ```
-cat << EOF | oc create -f -
+cat << EOF | oc apply -f -
 kind: Namespace
 apiVersion: v1
 metadata:
@@ -241,7 +241,7 @@ EOF
 ```
 
 ```
-cat << EOF | oc create -f -
+cat << EOF | oc apply -f -
 apiVersion: observability.openshift.io/v1alpha1
 kind: UIPlugin
 metadata:
