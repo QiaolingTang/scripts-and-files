@@ -232,7 +232,7 @@ metadata:
   name: cluster-observability-operator
   namespace: openshift-cluster-observability-operator
 spec:
-  channel: development
+  channel: stable
   installPlanApproval: Automatic
   name: cluster-observability-operator
   source: redhat-operators
