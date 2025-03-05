@@ -13,9 +13,9 @@ Ref: https://docs.openshift.com/rosa/openshift_images/managing_images/using-imag
 
 ## Management Cluster
 
-- Update secret/${hcp-cluster-name}-pull-secret in ns/clusters
-- Update secret/pull-secret in ns/clusters-${hcp-cluster-name}
+- Update `secret/${hcp-cluster-name}-pull-secret` in `ns/clusters`
+- Update `secret/pull-secret` in `ns/clusters-${hcp-cluster-name}`
 
 ## Hosted Cluster
 
-- Update secret/pull-secret in ns/openshift-config
+- Update `secret/pull-secret` in `ns/openshift-config`
