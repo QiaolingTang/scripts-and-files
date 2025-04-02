@@ -146,6 +146,8 @@ WORKDIR /
 
 `:r !`+cmd read the output of cmd and put it into current file
 
+# run one Normal mode command in Insert mode
+`Ctrl o` + Normal mode command
 
 # useful links
 - https://vimgolf.com/
