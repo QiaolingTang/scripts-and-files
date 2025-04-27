@@ -13,9 +13,17 @@ Ref: https://docs.openshift.com/rosa/openshift_images/managing_images/using-imag
 
 ## Management Cluster
 
-- Update `secret/${hcp-cluster-name}-pull-secret` in `ns/clusters`
-- Update `secret/pull-secret` in `ns/clusters-${hcp-cluster-name}`
+- Create new secret with the new credentials in `clusters` namespace:
 
-## Hosted Cluster
+```
+oc create secret generic <cluster-name>-pull-secret-new -n clusters --from-file=.dockerconfigjson
+```
 
-- Update `secret/pull-secret` in `ns/openshift-config`
+- Update `hostedclusters.hypershift.openshift.io/<cluster-name>` in `clusters` namespace:
+
+```
+oc patch -n clusters hostedclusters.hypershift.openshift.io/<cluster-name> -p '{"spec": {"pullSecret": {"name": "<cluster-name>-pull-secret-new"}}}' --type=merge
+```
+
+- Wait for the reconciliation completed on the hostedcluster
+
