@@ -30,6 +30,26 @@ podman build -t "$indexImage" -f "$name.Dockerfile" .
 podman push "$indexImage"
 ```
 
+# Create catalogsource
+
+```
+cat << EOF | oc create -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: logging-operators
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  grpcPodConfig:
+    extractContent:
+      cacheDir: /tmp/cache
+      catalogDir: /configs
+    memoryTarget: 30Mi
+  image: ${indexImage}
+EOF
+```
+
 
 
 # Refs:
