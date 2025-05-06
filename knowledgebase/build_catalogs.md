@@ -103,6 +103,26 @@ podman build -t quay.io/logging/logging-operators:latest -f logging-operators.Do
 podman push quay.io/logging/logging-operators:latest
 ```
 
+## Create catalogsource
+
+```
+cat << EOF | oc create -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: logging-operators
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  grpcPodConfig:
+    extractContent:
+      cacheDir: /tmp/cache
+      catalogDir: /configs
+    memoryTarget: 30Mi
+  image: quay.io/logging/logging-operators:latest
+EOF
+```
+
 # Refs:
 
 - https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/extensions/catalogs#olm-fb-catalogs-package-reqd-prop_fbc
