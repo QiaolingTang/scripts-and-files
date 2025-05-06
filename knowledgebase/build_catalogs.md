@@ -64,7 +64,7 @@ mkdir logging-operators/loki-operator
 opm generate dockerfile logging-operators
 ```
 
-## Organizing the Bundles into Channels
+## Organize the Bundles into Channels
 
 ```
 cat << EOF >> cluster-logging-operator-template.yaml
@@ -76,7 +76,6 @@ Stable:
   - Image: quay.io/xxxx/cluster-logging-operator-bundle-v6-3@sha256:xxxx
 EOF
 
-
 cat << EOF >> loki-operator-template.yaml
 Schema: olm.semver
 GenerateMajorChannels: true
@@ -85,8 +84,6 @@ Stable:
   Bundles:
   - Image: quay.io/xxx/loki-operator-bundle-v6-3@sha256:xxxx
 EOF
-
-opm alpha render-template semver -o yaml  < loki-operator-template.yaml >> logging-operators/catalog.yaml
 ```
 
 ## Generating the Catalog
