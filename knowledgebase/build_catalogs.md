@@ -28,6 +28,7 @@ for l in $(yq e '.name as $catalog | .references[] | .image + "|" + $catalog + "
 done
 opm generate dockerfile "$name"
 indexImage=$(yq eval '.repo + ":" + .tag' catalog.yaml)
+echo $indexImage
 podman build -t "$indexImage" -f "$name.Dockerfile" .
 podman push "$indexImage"
 ```
@@ -35,7 +36,7 @@ podman push "$indexImage"
 ## Create catalogsource
 
 ```
-cat << EOF | oc create -f -
+cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -48,7 +49,7 @@ spec:
       cacheDir: /tmp/cache
       catalogDir: /configs
     memoryTarget: 30Mi
-  image: ${indexImage}
+  image: quay.io/logging/logging-operators:latest
 EOF
 ```
 
@@ -92,6 +93,8 @@ EOF
 opm alpha render-template semver -o yaml  < cluster-logging-operator-template.yaml > logging-operators/catalog.yaml
 
 opm alpha render-template semver -o yaml  < loki-operator-template.yaml >> logging-operators/catalog.yaml
+
+sed -i '' -e "s/stable-v6/stable-6.3/g" logging-operators/catalog.yaml
 ```
 
 
@@ -106,11 +109,11 @@ podman push quay.io/logging/logging-operators:latest
 ## Create catalogsource
 
 ```
-cat << EOF | oc create -f -
+cat << EOF | oc apply -f -
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
-  name: logging-operators
+  name: qe-app-registry
   namespace: openshift-marketplace
 spec:
   sourceType: grpc

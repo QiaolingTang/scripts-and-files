@@ -4,8 +4,12 @@ oc apply -f https://github.com/splunk/splunk-operator/releases/download/2.4.0/sp
 
 oc project splunk-operator
 
-oc adm policy add-scc-to-user nonroot -z splunk-operator-controller-manager
+
+oc adm policy add-scc-to-user nonroot-v2 -z splunk-operator-controller-manager
+oc adm policy add-scc-to-user nonroot-v2 -z default
 ```
+
+Might also need `oc annotate ns splunk-operator openshift.io/sa.scc.supplemental-groups="40000/10000" openshift.io/sa.scc.uid-range="40000/10000" --overwrite`
 
 ### Create splunk standalone
 ```
@@ -15,7 +19,7 @@ cat <<EOF | kubectl apply -n splunk-operator -f -
 apiVersion: enterprise.splunk.com/v4
 kind: Standalone
 metadata:
-  name: single
+  name: standalone-sample
   finalizers:
   - enterprise.splunk.com/delete-pvc
 EOF
@@ -23,11 +27,11 @@ EOF
 
 ### Expose route
 ```
-oc expose svc/splunk-single-standalone-headless
+oc expose svc/splunk-standalone-sample-standalone-headless
 
-oc get route splunk-single-standalone-headless -ojsonpath={.spec.host}
+oc get route splunk-standalone-sample-standalone-headless -ojsonpath={.spec.host}
 
-password=$(oc get secret splunk-single-standalone-secret-v1 -ojsonpath={.data.password} | base64 -d)
+password=$(oc get secret splunk-standalone-sample-standalone-secret-v1 -ojsonpath={.data.password} | base64 -d)
 echo $password
 ```
 Login to console with `admin:$password`
@@ -35,14 +39,20 @@ Login to console with `admin:$password`
 
 ### Forward logs to splunk
 ```
-oc create secret generic clf-splunk-secret --from-literal=hecToken=$(oc get secret splunk-single-standalone-secret-v1 -ojsonpath={.data.hec_token} | base64 -d)
+oc create route passthrough --service splunk-standalone-sample-standalone-service --port 8088
+
+splunk_host=$(oc get route splunk-standalone-sample-standalone-service -ojsonpath='{.spec.host}')
+
+oc create secret generic clf-splunk-secret --from-literal=hecToken=$(oc get secret splunk-standalone-sample-standalone-secret-v1 -ojsonpath={.data.hec_token} | base64 -d)
+
 oc create sa clf-splunk
 oc adm policy add-cluster-role-to-user collect-application-logs -z clf-splunk
 oc adm policy add-cluster-role-to-user collect-infrastructure-logs -z clf-splunk
 oc adm policy add-cluster-role-to-user collect-audit-logs -z clf-splunk
 
+
 cat << EOF | oc create -f -
-  apiVersion: logging.openshift.io/v1
+  apiVersion: observability.openshift.io/v1
   kind: ClusterLogForwarder
   metadata:
     name: clf-splunk
@@ -50,9 +60,13 @@ cat << EOF | oc create -f -
     outputs:
     - name: splunk
       type: splunk
-      url: https://splunk-single-standalone-service.splunk-operator.svc:8088
-      secret:
-        name: clf-splunk-secret
+      splunk:
+        url: https://${splunk_host}
+        authentication:
+          token:
+            key: hecToken
+            secretName: clf-splunk-secret
+        index: main
       tls:
         insecureSkipVerify: true
     pipelines:
@@ -63,7 +77,8 @@ cat << EOF | oc create -f -
       - audit
       outputRefs:
       - splunk
-    serviceAccountName: clf-splunk
+    serviceAccount:
+      name: clf-splunk
 EOF
 ```
 
