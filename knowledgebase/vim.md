@@ -19,6 +19,8 @@
 # move
 `0` move to the beginning of a line
 
+`^` go to the first non-blank character in a line
+
 `$` move to the end of a line
 
 `gg` move to the beginning of a file
