@@ -151,6 +151,13 @@ WORKDIR /
 # run one Normal mode command in Insert mode
 `Ctrl o` + Normal mode command
 
+# stop vim from adding a new line at the end of a file
+```
+vim -b $filename
+:set noeol
+:wq
+```
+
 # useful links
 - https://vimgolf.com/
 - https://vim-adventures.com/
