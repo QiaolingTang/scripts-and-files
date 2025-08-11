@@ -130,3 +130,4 @@ EOF
 
 - https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/extensions/catalogs#olm-fb-catalogs-package-reqd-prop_fbc
 - https://olm.operatorframework.io/docs/tasks/creating-a-catalog/
+- https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/operators/administrator-tasks#olm-filtering-fbc_olm-managing-custom-catalogs
