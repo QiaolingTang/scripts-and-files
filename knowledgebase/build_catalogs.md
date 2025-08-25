@@ -126,6 +126,47 @@ spec:
 EOF
 ```
 
+
+# Update a Catalog Image
+
+```
+opm render registry.redhat.io/redhat/redhat-operator-index:v4.20 -oyaml > index.yaml
+mkdir logging-operators
+opm generate dockerfile logging-operators -i registry.redhat.io/openshift4/ose-operator-registry-rhel9:v4.20
+
+opm init cluster-logging --default-channel=stable-6.4 --output yaml > logging-operators/index.yaml
+opm render quay.io/logging/cluster-logging-operator-bundle:6.4  -oyaml >> logging-operators/index.yaml
+```
+
+add a channel entry to logging-operators/index.yaml:
+
+```
+---
+schema: olm.channel
+package: cluster-logging
+name: stable-6.4
+entries:
+  - name: cluster-logging.v6.4.0
+    skipRange: '>=6.1.0-0 <6.4.0'
+```
+
+merge the context in `index.yaml` and `logging-operators/index.yaml` into `logging-operators/index.yaml`, then validate package:
+
+```
+# opm validate logging-operators
+# echo $?
+0
+```
+
+build image:
+
+```
+podman build . -f logging-operators.Dockerfile -t quay.io/logging/logging-operators:latest
+
+podman push quay.io/logging/logging-operators:latest
+```
+
+
 # Refs:
 
 - https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/extensions/catalogs#olm-fb-catalogs-package-reqd-prop_fbc
