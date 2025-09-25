@@ -136,6 +136,9 @@ opm generate dockerfile logging-operators -i registry.redhat.io/openshift4/ose-o
 
 opm init cluster-logging --default-channel=stable-6.4 --output yaml > logging-operators/index.yaml
 opm render quay.io/logging/cluster-logging-operator-bundle:6.4  -oyaml >> logging-operators/index.yaml
+
+opm init loki-operator --default-channel=stable-6.4 --output yaml >> logging-operators/index.yaml
+opm render quay.io/logging/loki-operator-bundle:6.4  -oyaml >> logging-operators/index.yaml
 ```
 
 add a channel entry to logging-operators/index.yaml:
@@ -147,6 +150,13 @@ package: cluster-logging
 name: stable-6.4
 entries:
   - name: cluster-logging.v6.4.0
+    skipRange: '>=6.1.0-0 <6.4.0'
+---
+schema: olm.channel
+package: loki-operator
+name: stable-6.4
+entries:
+  - name: loki-operator.v6.4.0
     skipRange: '>=6.1.0-0 <6.4.0'
 ```
 
