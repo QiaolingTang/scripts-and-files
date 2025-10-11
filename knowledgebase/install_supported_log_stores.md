@@ -44,6 +44,36 @@ shasum -a 512 -c elasticsearch-8.18.1-x86_64.rpm.sha512
 sudo rpm --install elasticsearch-8.18.1-x86_64.rpm
 ```
 
+### Install from ECK operator
+```
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch-sample
+spec:
+  version: 9.1.0
+  nodeSets:
+    - name: default
+      config:
+        node.roles:
+          - master
+          - data
+        node.attr.attr_name: attr_value
+        node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  memory: 4Gi
+                  cpu: 1
+                limits:
+                  memory: 4Gi
+                  cpu: 2
+      count: 3
+```
+
 ## Configuration
 
 ### Start service
@@ -112,6 +142,58 @@ cat << EOF | oc create -f -
       name: logcollector
 EOF
 ```
+
+### For ECK operator managed ES:
+
+```
+oc extract secret/elasticsearch-sample-es-http-certs-public --confirm
+ELASTIC_PASSWORD=$(oc get secret elasticsearch-sample-es-elastic-user -ojsonpath='{.data.elastic}' | base64 -d)
+
+oc create secret generic es-https --from-file=ca-bundle.crt=ca.crt --from-literal=username=elastic --from-literal=password=$ELASTIC_PASSWORD
+
+oc create sa logcollector
+oc adm policy add-cluster-role-to-user collect-infrastructure-logs -z logcollector
+oc adm policy add-cluster-role-to-user collect-audit-logs -z logcollector
+oc adm policy add-cluster-role-to-user collect-application-logs -z logcollector
+
+cat << EOF | oc create -f -
+  apiVersion: "observability.openshift.io/v1"
+  kind: ClusterLogForwarder
+  metadata:
+    name: clf-eck-es
+  spec:
+    managementState: Managed
+    outputs:
+    - name: eck-es
+      type: elasticsearch
+      elasticsearch:
+        authentication:
+          password:
+            key: password
+            secretName: es-https
+          username:
+            key: username
+            secretName: es-https
+        index: "{.log_type||\"none-typed-logs\"}"
+        url: https://elasticsearch-sample-es-http.${namespace}.svc:9200
+        version: 8
+      tls:
+        ca:
+          key: ca-bundle.crt
+          secretName: es-https
+    pipelines:
+    - name: forward-to-external-es
+      inputRefs:
+      - infrastructure
+      - audit
+      outputRefs:
+      - eck-es
+    serviceAccount:
+      name: logcollector
+EOF
+
+```
+
 
 
 # Splunk
