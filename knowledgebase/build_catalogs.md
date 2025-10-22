@@ -74,7 +74,7 @@ GenerateMajorChannels: true
 GenerateMinorChannels: false
 Stable:
   Bundles:
-  - Image: quay.io/xxxx/cluster-logging-operator-bundle-v6-3@sha256:xxxx
+  - Image: quay.io/xxxx/cluster-logging-operator-bundle-v6-4@sha256:xxxx
 EOF
 
 cat << EOF >> loki-operator-template.yaml
@@ -83,7 +83,7 @@ GenerateMajorChannels: true
 GenerateMinorChannels: false
 Stable:
   Bundles:
-  - Image: quay.io/xxx/loki-operator-bundle-v6-3@sha256:xxxx
+  - Image: quay.io/xxx/loki-operator-bundle-v6-4@sha256:xxxx
 EOF
 ```
 
@@ -94,7 +94,7 @@ opm alpha render-template semver -o yaml  < cluster-logging-operator-template.ya
 
 opm alpha render-template semver -o yaml  < loki-operator-template.yaml >> logging-operators/catalog.yaml
 
-sed -i '' -e "s/stable-v6/stable-6.3/g" logging-operators/catalog.yaml
+sed -i '' -e "s/stable-v6/stable-6.4/g" logging-operators/catalog.yaml
 ```
 
 
@@ -150,14 +150,14 @@ package: cluster-logging
 name: stable-6.4
 entries:
   - name: cluster-logging.v6.4.0
-    skipRange: '>=6.1.0-0 <6.4.0'
+    skipRange: '>=6.2.0-0 <6.4.0'
 ---
 schema: olm.channel
 package: loki-operator
 name: stable-6.4
 entries:
   - name: loki-operator.v6.4.0
-    skipRange: '>=6.1.0-0 <6.4.0'
+    skipRange: '>=6.2.0-0 <6.4.0'
 ```
 
 merge the context in `index.yaml` and `logging-operators/index.yaml` into `logging-operators/index.yaml`, then validate package:
