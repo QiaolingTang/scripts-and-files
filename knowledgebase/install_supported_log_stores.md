@@ -51,7 +51,7 @@ kind: Elasticsearch
 metadata:
   name: elasticsearch-sample
 spec:
-  version: 9.1.0
+  version: 8.12.0
   nodeSets:
     - name: default
       config:
